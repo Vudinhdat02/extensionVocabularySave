@@ -6,9 +6,9 @@ Tiện ích mở rộng cho Chrome tự động lưu từ vựng mỗi khi sao c
 
 ## Tính năng
 
-- Tự động lưu cụm từ đang chọn (tối đa 4 từ) khi sao chép bằng Ctrl+C hoặc menu chuột phải, kể cả trong ô nhập liệu.
+- Tự động lưu cụm từ đang chọn (tối đa 4 từ) khi sao chép bằng Ctrl+C, Ctrl+X hoặc menu chuột phải, kể cả trong ô nhập liệu và iframe. Dấu câu ở hai đầu được loại bỏ.
 - Bỏ qua từ trùng lặp, không phân biệt chữ hoa và chữ thường.
-- Bảng từ vựng nổi trên trang: kéo thả, thay đổi kích thước, thu nhỏ hoặc ẩn.
+- Bảng từ vựng nổi trên trang: kéo thả, thay đổi kích thước, thu nhỏ, ẩn, xóa từng từ. Giao diện tách biệt bằng Shadow DOM nên không bị CSS của trang ảnh hưởng.
 - Xuất danh sách ra file CSV (UTF-8) để dùng với Excel, Google Sheets, Anki…
 - Bật / tắt tiện ích và hiện / ẩn bảng từ từ popup trên thanh công cụ.
 - Dữ liệu chỉ lưu cục bộ bằng `chrome.storage.local`, không gửi đi đâu.
@@ -26,13 +26,17 @@ Tiện ích hoạt động trên Chrome, Edge, Brave và các trình duyệt nh�
 | Quyền | Mục đích |
 |---|---|
 | `storage` | Lưu danh sách từ vựng và trạng thái bật/tắt |
-| Content script trên `<all_urls>` | Nhận sự kiện sao chép và hiển thị bảng từ trên mọi trang |
+| `scripting` | Nạp lại script vào các tab đang mở sau khi cài hoặc cập nhật, không cần tải lại trang |
+| Quyền truy cập `<all_urls>` | Nhận sự kiện sao chép và hiển thị bảng từ trên mọi trang |
+
+Tiện ích không chạy được trên các trang hệ thống (`chrome://`, `edge://`), cửa hàng tiện ích và trình xem PDF tích hợp của trình duyệt.
 
 ## Cấu trúc
 
 ```
 manifest.json   Khai báo tiện ích (Manifest V3)
-content.js      Bắt sự kiện sao chép, lưu từ, bảng từ nổi, xuất CSV
+background.js   Service worker: ghi danh sách từ tuần tự, nạp script vào tab đang mở
+content.js      Bắt sự kiện sao chép, bảng từ nổi, xuất CSV
 popup.html      Giao diện popup
 popup.js        Bật/tắt tiện ích, hiện/ẩn bảng từ
 icon.png        Biểu tượng
